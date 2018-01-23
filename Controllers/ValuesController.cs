@@ -1,10 +1,16 @@
 ﻿using System.Threading.Tasks;
 using api_dating_app.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace api_dating_app.Controllers
 {
+    /// <summary>
+    /// A dummy controller used only for testing!
+    /// TODO: Remove in the final version
+    /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {

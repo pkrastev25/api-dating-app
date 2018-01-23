@@ -9,13 +9,25 @@ namespace api_dating_app.Data
     /// </summary>
     public class DataContext : DbContext
     {
+        /// <summary>
+        /// Constructor. All incoming params are injected via dependency
+        /// injection.
+        /// </summary>
+        /// <param name="options">Additional information needed by EF</param>
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
         /// <summary>
-        /// Creates a table in the DB with values.
+        /// Creates and provides a reference to the table which is
+        /// populated by <see cref="Value"/> entries in the DB.
         /// </summary>
         public DbSet<Value> Values { get; set; }
+
+        /// <summary>
+        /// Creates and provides a reference to the table which is
+        /// populated by <see cref="User"/> entries in the DB.
+        /// </summary>
+        public DbSet<User> Users { get; set; }
     }
 }
