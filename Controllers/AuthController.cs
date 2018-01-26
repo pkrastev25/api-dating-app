@@ -20,6 +20,7 @@ namespace api_dating_app.Controllers
     {
         // SERVICES
         private readonly IAuthRepository _authRepository;
+
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -42,9 +43,12 @@ namespace api_dating_app.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
-            // Validate request
-            userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
+            if (!string.IsNullOrEmpty(userForRegisterDto.UserName))
+            {
+                userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
+            }
 
+            // Validate request
             if (await _authRepository.UserExists(userForRegisterDto.UserName))
             {
                 ModelState.AddModelError("UserName", "User name already exists!");
@@ -74,7 +78,8 @@ namespace api_dating_app.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            var userFromRepo = await _authRepository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
+            var userFromRepo =
+                await _authRepository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
 
             if (userFromRepo == null)
             {
