@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace apidatingapp.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class AddValueModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

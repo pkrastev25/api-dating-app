@@ -18,6 +18,7 @@ namespace api_dating_app.Data
         /// Constructor. All incoming params are injected via dependency
         /// injection.
         /// </summary>
+        /// 
         /// <param name="context">Context to the database</param>
         public AuthRepository(DataContext context)
         {
@@ -27,10 +28,11 @@ namespace api_dating_app.Data
         /// <summary>
         /// Handles the registration of the user inside the DB.
         /// </summary>
-        /// <param name="user">The <see cref="User"/> that will be saved into the DB</param>
+        /// 
+        /// <param name="user">The <see cref="UserModel"/> that will be saved into the DB</param>
         /// <param name="password">The password of the user</param>
         /// <returns>Registered user</returns>
-        public async Task<User> Register(User user, string password)
+        public async Task<UserModel> Register(UserModel user, string password)
         {
             // 'out' keyword passes variables by reference
             CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
@@ -48,10 +50,11 @@ namespace api_dating_app.Data
         /// Handles the login process by comparing the current user name
         /// and current password with the one saved into the DB.
         /// </summary>
+        /// 
         /// <param name="userName">The name of the user</param>
         /// <param name="password">The password of the user</param>
         /// <returns>An user if verification is successful, null otherwise</returns>
-        public async Task<User> Login(string userName, string password)
+        public async Task<UserModel> Login(string userName, string password)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
 
@@ -66,6 +69,7 @@ namespace api_dating_app.Data
         /// <summary>
         /// Verifies whether the current user name already exists inside the DB.
         /// </summary>
+        /// 
         /// <param name="username">The name of the user</param>
         /// <returns>True if the user name is already taken, false otherwise</returns>
         public async Task<bool> UserExists(string username)
@@ -78,6 +82,7 @@ namespace api_dating_app.Data
         /// password. For security reasons, we do not store the password itself
         /// inside the DB.
         /// </summary>
+        /// 
         /// <param name="password">The password of the user</param>
         /// <param name="passwordHash">Used to store the password hash</param>
         /// <param name="passwordSalt">Used to store store the password salt</param>
@@ -100,6 +105,7 @@ namespace api_dating_app.Data
         /// Converts the password to a password hash and a password salt. Verifies whether
         /// they match.
         /// </summary>
+        /// 
         /// <param name="password">The password of the user</param>
         /// <param name="userPasswordHash">The password hash of the user</param>
         /// <param name="userPasswordSalt">The password salt of the user</param>

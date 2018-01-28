@@ -13,12 +13,12 @@ namespace api_dating_app.Data
         /// <summary>
         /// An abstraction of the registration process.
         /// </summary>
-        Task<User> Register(User user, string password);
+        Task<UserModel> Register(UserModel user, string password);
 
         /// <summary>
         /// An abstraction of the login process.
         /// </summary>
-        Task<User> Login(string userName, string password);
+        Task<UserModel> Login(string userName, string password);
 
         /// <summary>
         /// An abstraction of the verification of duplicate user names.

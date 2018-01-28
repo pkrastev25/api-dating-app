@@ -10,7 +10,7 @@ namespace api_dating_app.Controllers
     /// A dummy controller used only for testing!
     /// TODO: Remove in the final version
     /// </summary>
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {

@@ -2,6 +2,7 @@
 using System.Text;
 using api_dating_app.Data;
 using api_dating_app.Helpers;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -35,10 +36,14 @@ namespace api_dating_app
             services.AddDbContext<DataContext>(x =>
                 x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
+            services.AddTransient<SeedContext>();
             services.AddMvc();
             // Resolves the 'access-control-allow-origin' error
             services.AddCors();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
+            // Setup the mapper
+            services.AddAutoMapper();
 
             // Setup the authentication middleware
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
@@ -53,10 +58,16 @@ namespace api_dating_app
                         ValidateAudience = false
                     };
                 });
+            
+            // Resolves the cycling dependency between the user and photo models
+            services.AddMvc().AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedContext seedContext)
         {
             if (env.IsDevelopment())
             {
@@ -82,6 +93,10 @@ namespace api_dating_app
             }
 
             // Ordering matters !
+            /*
+            // Use to populate the DB with data
+            seedContext.SeedUserData();
+            */
             // Resolves the 'access-control-allow-origin' error
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             // Include the authentication middleware

@@ -10,8 +10,8 @@ using System;
 namespace apidatingapp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180121174336_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20180128112157_AddValueModel")]
+    partial class AddValueModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace apidatingapp.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
-            modelBuilder.Entity("api_dating_app.models.Value", b =>
+            modelBuilder.Entity("api_dating_app.models.ValueModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();

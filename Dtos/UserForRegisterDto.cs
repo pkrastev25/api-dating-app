@@ -9,13 +9,13 @@ namespace api_dating_app.DTOs
     public class UserForRegisterDto
     {
         /// <summary>
-        /// The name of the user. Contains validation logic.
+        /// Represents the name of the user. Contains validation logic.
         /// </summary>
         [Required]
         public string UserName { get; set; }
 
         /// <summary>
-        /// The password of the user. Contains validation logic.
+        /// Represents the password of the user. Contains validation logic.
         /// </summary>
         [Required]
         [StringLength(8, MinimumLength = 4, ErrorMessage = "You must specify a password between 4 and 8 characters!")]

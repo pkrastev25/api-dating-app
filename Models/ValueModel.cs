@@ -4,7 +4,7 @@
     /// Model of a value. Used to store data in the DB.
     /// TODO: Remove in a future version. Used only to test the connection to the DB.
     /// </summary>
-    public class Value
+    public class ValueModel
     {
         public int Id { get; set; }
 
