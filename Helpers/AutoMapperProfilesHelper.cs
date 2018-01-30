@@ -38,6 +38,8 @@ namespace api_dating_app.Helpers
                 );
 
             CreateMap<PhotoModel, PhotoForDetailDto>();
+
+            CreateMap<UserForUpdateDto, UserModel>();
         }
     }
 }
