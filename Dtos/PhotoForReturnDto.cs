@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace api_dating_app.models
+namespace api_dating_app.DTOs
 {
     /// <summary>
-    /// Represents a model of a photo which will be stored inside
-    /// the DB.
+    /// Data Transfer Object (DTO) that carries all information for
+    /// a photo uploaded to Cloudinary.
     /// </summary>
-    public class PhotoModel
+    public class PhotoForReturnDto
     {
         /// <summary>
         /// Represents the unique identifier for this photo inside
@@ -35,23 +35,8 @@ namespace api_dating_app.models
         public bool IsMain { get; set; }
 
         /// <summary>
-        /// Specifies the id used by Cloudinary.
+        /// Represents the id used by Cloudinary.
         /// </summary>
         public string PublicId { get; set; }
-
-        /// <summary>
-        /// Specifies the user to which the photo belongs to.
-        /// Note, this create a relation in the DB which deletes the
-        /// photo if the user is deleted!
-        /// </summary>
-        public UserModel User { get; set; }
-
-        /// <summary>
-        /// Specifies the unique identifier of an user to which the
-        /// photo belongs to.
-        /// Note, this create a relation in the DB which deletes the
-        /// photo if the user is deleted!
-        /// </summary>
-        public int UserId { get; set; }
     }
 }

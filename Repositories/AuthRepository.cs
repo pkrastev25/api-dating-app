@@ -24,7 +24,7 @@ namespace api_dating_app.Data
         {
             _context = context;
         }
-        
+
         /// <summary>
         /// Handles the registration of the user inside the DB.
         /// </summary>
@@ -56,7 +56,9 @@ namespace api_dating_app.Data
         /// <returns>An user if verification is successful, null otherwise</returns>
         public async Task<UserModel> Login(string userName, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+            var user = await _context.Users
+                .Include(p => p.Photos)
+                .FirstOrDefaultAsync(x => x.UserName == userName);
 
             if (user == null)
             {
@@ -76,7 +78,7 @@ namespace api_dating_app.Data
         {
             return await _context.Users.AnyAsync(x => x.UserName == username);
         }
-        
+
         /// <summary>
         /// Creates a password hash and a password salt based on the current
         /// password. For security reasons, we do not store the password itself
@@ -100,7 +102,7 @@ namespace api_dating_app.Data
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
-        
+
         /// <summary>
         /// Converts the password to a password hash and a password salt. Verifies whether
         /// they match.

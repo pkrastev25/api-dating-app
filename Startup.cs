@@ -44,6 +44,7 @@ namespace api_dating_app
             services.AddScoped<IDatingRepository, DatingRepository>();
             // Setup the mapper
             services.AddAutoMapper();
+            services.Configure<CloudinarySettingsHelper>(Configuration.GetSection("CloudinarySettings"));
 
             // Setup the authentication middleware
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);

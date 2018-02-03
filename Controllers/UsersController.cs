@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api_dating_app.Controllers
 {
     /// <summary>
-    /// Provides API endpoints for the users.
+    /// Provides API endpoints for managing users.
     /// </summary>
     [Authorize]
     [Route("api/[controller]")]
@@ -38,7 +38,7 @@ namespace api_dating_app.Controllers
         /// <see cref="UserForListDto"/>.
         /// </summary>
         /// 
-        /// <returns>200 together with all users</returns>
+        /// <returns>200 - if the process is successful</returns>
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -54,12 +54,12 @@ namespace api_dating_app.Controllers
         /// <see cref="UserForDetailDto"/>.
         /// </summary>
         /// 
-        /// <param name="id">The id of the specific user</param>
-        /// <returns>200 together with the user</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        /// <param name="userId">The id of the specific user</param>
+        /// <returns>200 - if the process is successful</returns>
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(int userId)
         {
-            var user = await _datingRepository.GetUser(id);
+            var user = await _datingRepository.GetUser(userId);
             var userToReturn = _mapperService.Map<UserForDetailDto>(user);
 
             return Ok(userToReturn);
@@ -71,12 +71,12 @@ namespace api_dating_app.Controllers
         /// <see cref="UserForUpdateDto"/>.
         /// </summary>
         /// 
-        /// <param name="id">The id of the user</param>
+        /// <param name="userId">The id of the user</param>
         /// <param name="userForUpdate">The update user information</param>
-        /// <returns>400 if the data is invalid, 404 if a user is not found for the id, 401 if the requesting user does not have permissions, 204 if the update is successful</returns>
+        /// <returns>400, 401, 404 - if the process is failed, 204 - if the process is successful</returns>
         /// <exception cref="Exception">The user failed to update</exception>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserForUpdateDto userForUpdate)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UserForUpdateDto userForUpdate)
         {
             // Validate the data
             if (!ModelState.IsValid)
@@ -84,17 +84,17 @@ namespace api_dating_app.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Extract the user Id from the JWT token
+            // Extract the user id from the JWT token
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var userFromRepo = await _datingRepository.GetUser(id);
+            var userFromRepo = await _datingRepository.GetUser(userId);
 
             // Check if the user exists
             if (userFromRepo == null)
             {
-                return NotFound($"Could not find user with an Id of {id}");
+                return NotFound($"Could not find user with an id of {userId}");
             }
 
-            // Check if the requestin user can update the user
+            // Check if the requesting user can update the user
             if (currentUserId != userFromRepo.Id)
             {
                 return Unauthorized();
@@ -109,7 +109,7 @@ namespace api_dating_app.Controllers
                 return NoContent();
             }
 
-            throw new Exception($"Updating user {id} failed on save!");
+            throw new Exception($"Updating user {userId} failed on save!");
         }
     }
 }

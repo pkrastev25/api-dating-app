@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using api_dating_app.models;
 using Microsoft.EntityFrameworkCore;
@@ -73,13 +74,40 @@ namespace api_dating_app.Data
         /// Retrieves a specific user from the database.
         /// </summary>
         /// 
-        /// <param name="id">The id of the user</param>
-        /// <returns>The specific user///</returns>
-        public async Task<UserModel> GetUser(int id)
+        /// <param name="userId">The photoId of the user</param>
+        /// <returns>The specific user</returns>
+        public async Task<UserModel> GetUser(int userId)
         {
-            var user = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id == userId);
 
             return user;
+        }
+
+        /// <summary>
+        /// Retrieves a specific photo from the database.
+        /// </summary>
+        /// 
+        /// <param name="photoId">The id of the photo</param>
+        /// <returns>The specific photo</returns>
+        public Task<PhotoModel> GetPhoto(int photoId)
+        {
+            var photo = _context.Photos.FirstOrDefaultAsync(p => p.Id == photoId);
+
+            return photo;
+        }
+
+        /// <summary>
+        /// Retrieves the main photo for a specific user from the 
+        /// database.
+        /// </summary>
+        /// 
+        /// <param name="userId">The id of the user</param>
+        /// <returns>The main photo for the specific user</returns>
+        public Task<PhotoModel> GetMainPhotoForUser(int userId)
+        {
+            return _context.Photos
+                .Where(u => u.UserId == userId)
+                .FirstOrDefaultAsync(p => p.IsMain);
         }
     }
 }

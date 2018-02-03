@@ -39,6 +39,18 @@ namespace api_dating_app.Data
         /// An abstraction of retrieving a single user from the
         /// database process.
         /// </summary>
-        Task<UserModel> GetUser(int id);
+        Task<UserModel> GetUser(int userId);
+
+        /// <summary>
+        /// An abstraction of retrieving a photo from the database
+        /// process.
+        /// </summary>
+        Task<PhotoModel> GetPhoto(int photoId);
+
+        /// <summary>
+        /// An abstraction of retrieving the main photo of an user
+        /// from the database process.
+        /// </summary>
+        Task<PhotoModel> GetMainPhotoForUser(int userId);
     }
 }
