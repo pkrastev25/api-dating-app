@@ -56,7 +56,7 @@ namespace api_dating_app.Controllers
         /// 
         /// <param name="userId">The id of the specific user</param>
         /// <returns>200 - if the process is successful</returns>
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int userId)
         {
             var user = await _datingRepository.GetUser(userId);

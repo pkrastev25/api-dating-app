@@ -65,16 +65,19 @@ namespace api_dating_app.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userToCreate = new UserModel
-            {
-                UserName = userForRegisterDto.UserName
-            };
+            var userToCreate = _mapperService.Map<UserModel>(userForRegisterDto);
 
             var createdUser = await _authRepository.Register(userToCreate, userForRegisterDto.Password);
 
             if (createdUser != null)
             {
-                return StatusCode(201);
+                var userToReturn = _mapperService.Map<UserForDetailDto>(createdUser);
+
+                return CreatedAtRoute(
+                    "GetUser",
+                    new {controller = "Users", userId = createdUser.Id},
+                    userToReturn
+                );
             }
 
             throw new Exception("The registration process failed!");

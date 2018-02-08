@@ -44,6 +44,8 @@ namespace api_dating_app.Helpers
             CreateMap<PhotoForCreationDto, PhotoModel>();
 
             CreateMap<PhotoModel, PhotoForReturnDto>();
+
+            CreateMap<UserForRegisterDto, UserModel>();
         }
     }
 }

@@ -146,7 +146,7 @@ namespace api_dating_app.Controllers
             var photoToReturn = _mapperService.Map<PhotoForReturnDto>(photo);
 
             // Return the photo together with the id
-            return CreatedAtRoute("GetPhoto", new {id = photo.Id}, photoToReturn);
+            return CreatedAtRoute("GetPhoto", new {photoId = photo.Id}, photoToReturn);
         }
 
         /// <summary>
