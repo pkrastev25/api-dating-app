@@ -59,12 +59,14 @@ namespace api_dating_app
                         ValidateAudience = false
                     };
                 });
-            
+
             // Resolves the cycling dependency between the user and photo models
             services.AddMvc().AddJsonOptions(opt =>
             {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
+            services.AddScoped<LogUserActivityHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

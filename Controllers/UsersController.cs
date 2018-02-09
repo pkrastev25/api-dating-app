@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using api_dating_app.Data;
 using api_dating_app.DTOs;
+using api_dating_app.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace api_dating_app.Controllers
     /// <summary>
     /// Provides API endpoints for managing users.
     /// </summary>
+    [ServiceFilter(typeof(LogUserActivityHelper))]
     [Authorize]
     [Route("api/[controller]")]
     public class UsersController : Controller
