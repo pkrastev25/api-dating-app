@@ -24,7 +24,6 @@ namespace api_dating_app.Data
         /// </summary>
         public DbSet<ValueModel> Values { get; set; }
 
-        
         /// <summary>
         /// Creates and provides a reference to the table which is
         /// populated by <see cref="UserModel"/> entries in the DB.
@@ -36,6 +35,25 @@ namespace api_dating_app.Data
         /// populated by <see cref="PhotoModel"/> entries in the DB.
         /// </summary>
         public DbSet<PhotoModel> Photos { get; set; }
-       
+
+        public DbSet<LikeModel> Likes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<LikeModel>()
+                .HasKey(k => new {k.LikerId, k.LikeeId});
+
+            builder.Entity<LikeModel>()
+                .HasOne(u => u.Likee)
+                .WithMany(u => u.Likers)
+                .HasForeignKey(u => u.LikerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.Entity<LikeModel>()
+                .HasOne(u => u.Liker)
+                .WithMany(u => u.Likees)
+                .HasForeignKey(u => u.LikeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

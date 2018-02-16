@@ -22,6 +22,10 @@
 
         private int _pageSize = 10;
 
+        public bool Likees { get; set; } = false;
+
+        public bool Likers { get; set; } = false;
+
         private const int MaxPageSize = 50;
     }
 }

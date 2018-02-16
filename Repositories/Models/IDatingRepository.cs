@@ -52,5 +52,7 @@ namespace api_dating_app.Data
         /// from the database process.
         /// </summary>
         Task<PhotoModel> GetMainPhotoForUser(int userId);
+
+        Task<LikeModel> GetLike(int userId, int recipientId);
     }
 }

@@ -86,6 +86,10 @@ namespace api_dating_app.models
         /// </summary>
         public ICollection<PhotoModel> Photos { get; set; }
 
+        public ICollection<LikeModel> Likers { get; set; }
+
+        public ICollection<LikeModel> Likees { get; set; }
+
         /// <summary>
         /// Constructor.
         /// </summary>
