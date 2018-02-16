@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using api_dating_app.Helpers;
 using api_dating_app.models;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,11 +63,34 @@ namespace api_dating_app.Data
         /// </summary>
         /// 
         /// <returns>All users from the database</returns>
-        public async Task<IEnumerable<UserModel>> GetUsers()
+        public async Task<PagedListHelper<UserModel>> GetUsers(UserParamsHelper userParams)
         {
-            var users = await _context.Users.Include(p => p.Photos).ToListAsync();
+            var users = _context.Users.Include(p => p.Photos).OrderByDescending(u => u.LastActive).AsQueryable();
+            users = users.Where(u => u.Id != userParams.UserId);
+            users = users.Where(u => u.Gender == userParams.Gender);
 
-            return users;
+            if (userParams.MinAge != 18 || userParams.MaxAge != 99)
+            {
+                users = users.Where(u =>
+                    u.DateOfBirth.CalculateAge() >= userParams.MinAge &&
+                    u.DateOfBirth.CalculateAge() <= userParams.MaxAge);
+            }
+
+            if (string.IsNullOrEmpty(userParams.OrderBy))
+                return await PagedListHelper<UserModel>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
+            {
+                switch (userParams.OrderBy)
+                {
+                    case "created":
+                        users = users.OrderByDescending(u => u.Created);
+                        break;
+                    default:
+                        users = users.OrderByDescending(u => u.LastActive);
+                        break;
+                }
+            }
+
+            return await PagedListHelper<UserModel>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
         }
 
         /// <summary>

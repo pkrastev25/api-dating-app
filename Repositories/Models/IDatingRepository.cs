@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using api_dating_app.Helpers;
 using api_dating_app.models;
 
 namespace api_dating_app.Data
@@ -33,7 +33,7 @@ namespace api_dating_app.Data
         /// An abstraction of retrieving all users from the database
         /// process.
         /// </summary>
-        Task<IEnumerable<UserModel>> GetUsers();
+        Task<PagedListHelper<UserModel>> GetUsers(UserParamsHelper userParamsHelper);
 
         /// <summary>
         /// An abstraction of retrieving a single user from the

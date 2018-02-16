@@ -42,10 +42,20 @@ namespace api_dating_app.Controllers
         /// 
         /// <returns>200 - if the process is successful</returns>
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(UserParamsHelper userParamsHelper)
         {
-            var users = await _datingRepository.GetUsers();
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userFromRepo = await _datingRepository.GetUser(currentUserId);
+            userParamsHelper.UserId = currentUserId;
+
+            if (string.IsNullOrEmpty(userParamsHelper.Gender))
+            {
+                userParamsHelper.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+            }
+
+            var users = await _datingRepository.GetUsers(userParamsHelper);
             var usersToReturn = _mapperService.Map<IEnumerable<UserForListDto>>(users);
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
             return Ok(usersToReturn);
         }
