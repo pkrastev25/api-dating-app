@@ -38,6 +38,8 @@ namespace api_dating_app.Data
 
         public DbSet<LikeModel> Likes { get; set; }
 
+        public DbSet<MessageModel> Messages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<LikeModel>()
@@ -48,11 +50,21 @@ namespace api_dating_app.Data
                 .WithMany(u => u.Likers)
                 .HasForeignKey(u => u.LikerId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             builder.Entity<LikeModel>()
                 .HasOne(u => u.Liker)
                 .WithMany(u => u.Likees)
                 .HasForeignKey(u => u.LikeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<MessageModel>()
+                .HasOne(u => u.Sender)
+                .WithMany(m => m.MessagesSend)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<MessageModel>()
+                .HasOne(u => u.Recipient)
+                .WithMany(m => m.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using api_dating_app.Helpers;
 using api_dating_app.models;
 
@@ -54,5 +55,11 @@ namespace api_dating_app.Data
         Task<PhotoModel> GetMainPhotoForUser(int userId);
 
         Task<LikeModel> GetLike(int userId, int recipientId);
+
+        Task<MessageModel> GetMessage(int messageId);
+
+        Task<PagedListHelper<MessageModel>> GetMessagesForUser(MessageParamsHelper messageParamsHelper);
+
+        Task<IEnumerable<MessageModel>> GetMessageThread(int userId, int recipientId);
     }
 }

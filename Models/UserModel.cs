@@ -90,6 +90,10 @@ namespace api_dating_app.models
 
         public ICollection<LikeModel> Likees { get; set; }
 
+        public ICollection<MessageModel> MessagesSend { get; set; }
+
+        public ICollection<MessageModel> MessagesRecieved { get; set; }
+
         /// <summary>
         /// Constructor.
         /// </summary>
