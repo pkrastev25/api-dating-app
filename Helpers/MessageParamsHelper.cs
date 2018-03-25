@@ -1,5 +1,8 @@
 ﻿namespace api_dating_app.Helpers
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     public class MessageParamsHelper
     {
         private const int MaxPageSize = 50;

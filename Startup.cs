@@ -9,12 +9,16 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api_dating_app
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -22,11 +26,6 @@ namespace api_dating_app
             Configuration = configuration;
         }
 
-        /// <summary>
-        /// Provides a reference to the appsettings.json file.
-        /// </summary>
-        /// 
-        /// <returns>The contents of the appsettings.json file</returns>
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -34,7 +33,49 @@ namespace api_dating_app
         {
             // Ordering does not matter !
             services.AddDbContext<DataContext>(x =>
+                x.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
+                    .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning))
+            );
+            services.AddTransient<SeedContext>();
+            services.AddMvc();
+            // Resolves the 'access-control-allow-origin' error
+            services.AddCors();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
+            // Setup the mapper
+            services.AddAutoMapper();
+            services.Configure<CloudinarySettingsHelper>(Configuration.GetSection("CloudinarySettings"));
+
+            // Setup the authentication middleware
+            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
+            // Resolves the cycling dependency between the user and photo models
+            services.AddMvc().AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddScoped<LogUserActivityHelper>();
+        }
+        
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            // Ordering does not matter !
+            services.AddDbContext<DataContext>(x =>
                 x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
+                    .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning))
             );
             services.AddTransient<SeedContext>();
             services.AddMvc();
@@ -96,15 +137,23 @@ namespace api_dating_app
             }
 
             // Ordering matters !
-            /*
             // Use to populate the DB with data
-            seedContext.SeedUserData();
-            */
+            //seedContext.SeedUserData();
             // Resolves the 'access-control-allow-origin' error
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             // Include the authentication middleware
             app.UseAuthentication();
-            app.UseMvc();
+            // Run the app contained in the wwwroot folder
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseMvc(routes =>
+            {
+                // Use routes from the front end if they do not exist in the API
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new {controller = "Fallback", action = "Index"}
+                );
+            });
         }
     }
 }

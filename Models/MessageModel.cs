@@ -2,6 +2,9 @@
 
 namespace api_dating_app.models
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     public class MessageModel
     {
         public int Id { get; set; }

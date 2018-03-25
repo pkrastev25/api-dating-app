@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace api_dating_app.Controllers
 {
     /// <summary>
-    /// Provides API endpoints for the authentication process.
+    /// Author: Petar Krastev
     /// </summary>
     [Route("api/[controller]")]
     public class AuthController : Controller
@@ -23,13 +23,6 @@ namespace api_dating_app.Controllers
         private readonly IConfiguration _configurationService;
         private readonly IMapper _mapperService;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// 
-        /// <param name="authRepository">A reference to the authentication repository</param>
-        /// <param name="configurationService">A reference to the configurationService of the project</param>
-        /// <param name="mapperService">A reference to the service</param>
         public AuthController(IAuthRepository authRepository, IConfiguration configurationService,
             IMapper mapperService)
         {
@@ -38,13 +31,6 @@ namespace api_dating_app.Controllers
             _mapperService = mapperService;
         }
 
-        /// <summary>
-        /// API endpoint for the registration procees. Validates the user data and carries
-        /// the registration.
-        /// </summary>
-        /// 
-        /// <param name="userForRegisterDto">Contains all the user data needed to register</param>
-        /// <returns>201 - if the process failed, 400 - if the process is successful</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
@@ -53,13 +39,11 @@ namespace api_dating_app.Controllers
                 userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
             }
 
-            // Check if the user already exists
             if (await _authRepository.UserExists(userForRegisterDto.UserName))
             {
                 ModelState.AddModelError("UserName", "User name already exists!");
             }
 
-            // Validate the data
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -69,27 +53,20 @@ namespace api_dating_app.Controllers
 
             var createdUser = await _authRepository.Register(userToCreate, userForRegisterDto.Password);
 
-            if (createdUser != null)
+            if (createdUser == null)
             {
-                var userToReturn = _mapperService.Map<UserForDetailDto>(createdUser);
-
-                return CreatedAtRoute(
-                    "GetUser",
-                    new {controller = "Users", userId = createdUser.Id},
-                    userToReturn
-                );
+                throw new Exception("The registration process failed!");
             }
 
-            throw new Exception("The registration process failed!");
+            var userToReturn = _mapperService.Map<UserForDetailDto>(createdUser);
+
+            return CreatedAtRoute(
+                "GetUser",
+                new {controller = "Users", userId = createdUser.Id},
+                userToReturn
+            );
         }
 
-        /// <summary>
-        /// API endpoint for the login process. Validates if the user already exists and creates
-        /// a JWT token used to authorize all further API requests.
-        /// </summary>
-        /// 
-        /// <param name="userForLoginDto">Contains all the user data needed to login</param>
-        /// <returns>401 - if the process failed, 200 - if the process is successful</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
         {
@@ -101,7 +78,6 @@ namespace api_dating_app.Controllers
                 return Unauthorized();
             }
 
-            // Generate token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configurationService.GetSection("AppSettings:Token").Value);
             var tokenDescriptor = new SecurityTokenDescriptor

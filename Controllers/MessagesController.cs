@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api_dating_app.Controllers
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     [ServiceFilter(typeof(LogUserActivityHelper))]
     [Authorize]
     [Route("api/users/{userId}/[controller]")]
@@ -58,7 +61,7 @@ namespace api_dating_app.Controllers
             var recipient = await _datingRepository.GetUser(messageForCreationDto.RecipientId);
             var sender = await _datingRepository.GetUser(messageForCreationDto.SenderId);
 
-            if (recipient == null)
+            if (recipient == null || sender == null)
             {
                 return BadRequest("Could not find user!");
             }
@@ -67,7 +70,7 @@ namespace api_dating_app.Controllers
 
             _datingRepository.Add(message);
 
-            var messageToReturn = _mapperService.Map<MessageForCreationDto>(message);
+            var messageToReturn = _mapperService.Map<MessageForReturnDto>(message);
 
             if (await _datingRepository.SaveAll())
             {

@@ -5,35 +5,19 @@ using Newtonsoft.Json;
 namespace api_dating_app.Data
 {
     /// <summary>
-    /// Context used to populate the database with predefined data.
-    /// Note, this class should be only used in development!
+    /// Author: Petar Krastev
     /// </summary>
     public class SeedContext
     {
-        /// <summary>
-        /// Specifies the password for all users stored inside
-        /// <see cref="UserSeedDataContext.json"/>.
-        /// </summary>
-        private const string PASSWORD = "password";
+        private const string Password = "password";
 
-        // SERVICES
         private readonly DataContext _context;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// 
-        /// <param name="context">Reference to the database service</param>
         public SeedContext(DataContext context)
         {
             _context = context;
         }
 
-        /// <summary>
-        /// Populates the database by creating users from a predefined json file
-        /// <see cref="UserSeedDataContext.json"/>. Recreates the password salt and
-        /// hash.
-        /// </summary>
         public void SeedUserData()
         {
             /*
@@ -48,8 +32,7 @@ namespace api_dating_app.Data
 
             foreach (var user in users)
             {
-                // Create the password hash
-                CreatePasswordHash(PASSWORD, out var passwordHash, out var passwordSalt);
+                CreatePasswordHash(Password, out var passwordHash, out var passwordSalt);
 
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
@@ -61,23 +44,8 @@ namespace api_dating_app.Data
             _context.SaveChanges();
         }
 
-        /// <summary>
-        /// Creates a password hash and a password salt based on the current
-        /// password. For security reasons, we do not store the password itself
-        /// inside the DB.
-        /// </summary>
-        /// 
-        /// <param name="password">The password of the user</param>
-        /// <param name="passwordHash">Used to store the password hash</param>
-        /// <param name="passwordSalt">Used to store store the password salt</param>
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            /*
-             * 'using' keyword makes sure that the dispose method is called on an
-             * class implementing IDisposable interface. This is very handy, because
-             * the created instance is freed from memory right after usage. It does
-             * not wait to be garbale collected
-             */
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
                 passwordSalt = hmac.Key;

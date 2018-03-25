@@ -2,6 +2,9 @@
 
 namespace api_dating_app.DTOs
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     public class MessageForReturnDto
     {
         public int Id { get; set; }

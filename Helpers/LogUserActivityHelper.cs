@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace api_dating_app.Helpers
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     public class LogUserActivityHelper : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

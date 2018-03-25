@@ -122,18 +122,6 @@ namespace apidatingapp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("api_dating_app.models.ValueModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Values");
-                });
-
             modelBuilder.Entity("api_dating_app.models.LikeModel", b =>
                 {
                     b.HasOne("api_dating_app.models.UserModel", "Liker")

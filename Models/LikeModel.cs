@@ -1,5 +1,8 @@
 ﻿namespace api_dating_app.models
 {
+    /// <summary>
+    /// Author: Petar Krastev
+    /// </summary>
     public class LikeModel
     {
         public int LikerId { get; set; }
